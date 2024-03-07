@@ -1,16 +1,17 @@
-package com.project.demo.model.repository;
+package com.project.demo.model.repositories;
 
 import com.project.demo.entities.Usuario;
-import com.project.demo.model.repositories.UsuarioRepositories;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-@SpringBootTest
 @RunWith(SpringRunner.class)
+@SpringBootTest
+@ActiveProfiles("test")
 public class UsuarioRepositoryTest {
 
   @Autowired
@@ -28,5 +29,14 @@ public class UsuarioRepositoryTest {
     boolean results = repository.existsByEmail("usuario@email.com");
 
     Assertions.assertThat(results).isTrue();
+  }
+
+  @Test
+  public void returnFalseWhenThereIsNoRegisteredUserWithTheEmail() {
+    repository.deleteAll();
+
+    boolean result = repository.existsByEmail("usuario@email.com");
+
+    Assertions.assertThat(result).isFalse();
   }
 }

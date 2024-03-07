@@ -37,10 +37,4 @@ public class Usuario {
     this.email = email;
     this.senha = senha;
   }
-
-  public static void main(String[] args) {
-    Usuario usuario = new Usuario();
-    usuario.setEmail("douglas@gmail.com");
-    usuario.setNome("usuario");
-  }
 }
