@@ -10,31 +10,31 @@ import lombok.Builder;
 import lombok.Data;
 
 @Entity
-@Table(name = "usuario", schema = "financas")
+@Table(name = "user", schema = "finance")
 @Data
 @Builder
-public class Usuario {
+public class User {
 
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(name = "nome")
-  private String nome;
+  @Column(name = "name")
+  private String name;
 
   @Column(name = "email")
   private String email;
 
-  @Column(name = "senha")
-  private String senha;
+  @Column(name = "password")
+  private String password;
 
-  public Usuario() {}
+  public User() {}
 
-  public Usuario(Long id, String nome, String email, String senha) {
+  public User(Long id, String name, String email, String password) {
     this.id = id;
-    this.nome = nome;
+    this.name = name;
     this.email = email;
-    this.senha = senha;
+    this.password = password;
   }
 }

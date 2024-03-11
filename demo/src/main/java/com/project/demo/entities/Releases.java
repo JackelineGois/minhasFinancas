@@ -1,5 +1,7 @@
 package com.project.demo.entities;
 
+import com.project.demo.model.enums.ReleaseStatus;
+import com.project.demo.model.enums.ReleaseType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
@@ -13,49 +15,50 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
-import com.project.demo.model.enums.StatusLancamento;
-import com.project.demo.model.enums.TipoLancamento;
-
 @Entity
-@Table(name = "lancamento", schema = "financas")
+@Table(name = "releases", schema = "finance")
 @Data
 @Builder
-public class Lancamento {
+@NoArgsConstructor
+@AllArgsConstructor
+public class Releases {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "descricao")
-  private String descricao;
+  @Column(name = "description")
+  private String description;
 
-  @Column(name = "mes")
-  private Integer mes;
+  @Column(name = "month")
+  private Integer month;
 
-  @Column(name = "ano")
-  private Integer ano;
+  @Column(name = "year")
+  private Integer year;
 
-  @Column(name = "valor")
-  private BigDecimal valor;
+  @Column(name = "value")
+  private BigDecimal value;
 
-  @Column(name = "data_cadastro")
+  @Column(name = "date_register")
   @Convert(converter = Jsr310JpaConverters.LocalDateConverter.class)
-  private LocalDate dataCadastro;
+  private LocalDate dateRegister;
 
   @ManyToOne
-  @JoinColumn(name = "id_usuario")
-  private Usuario usuario;
+  @JoinColumn(name = "id_user")
+  private User user;
 
-  @Column(name = "tipo")
+  @Column(name = "type")
   @Enumerated(value = EnumType.STRING)
-  private TipoLancamento tipo;
+  private ReleaseType type;
 
   @Column(name = "status")
   @Enumerated(value = EnumType.STRING)
-  private StatusLancamento status;
+  private ReleaseStatus status;
 }

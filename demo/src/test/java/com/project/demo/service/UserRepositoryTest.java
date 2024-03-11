@@ -1,10 +1,10 @@
 package com.project.demo.service;
 
-import com.project.demo.entities.Usuario;
+import com.project.demo.entities.User;
 import com.project.demo.exceptions.ErroAutenticacao;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.repositories.UsuarioRepositories;
-import com.project.demo.service.impl.UsuarioImpl;
+import com.project.demo.service.impl.UserServiceImpl;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -17,10 +17,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class UsuarioServiceTest {
+public class UserRepositoryTest {
 
   @SpyBean
-  UsuarioImpl service;
+  UserServiceImpl service;
 
   @MockBean
   UsuarioRepositories repository;
@@ -46,20 +46,13 @@ public class UsuarioServiceTest {
   @Test(expected = Test.None.class)
   public void successfullyAuthenticateUser() {
     String email = "email@email.com";
-    String senha = "senha";
+    String password = "password";
 
-    Usuario usuario = Usuario
-      .builder()
-      .email(email)
-      .senha(senha)
-      .id(1l)
-      .build();
+    User user = User.builder().email(email).password(password).id(1l).build();
 
-    Mockito
-      .when(repository.findByEmail(email))
-      .thenReturn(Optional.of(usuario));
+    Mockito.when(repository.findByEmail(email)).thenReturn(Optional.of(user));
 
-    Usuario result = service.autenticar(email, senha);
+    User result = service.autenticar(email, password);
 
     Assertions.assertThat(result).isNotNull();
   }
@@ -71,25 +64,25 @@ public class UsuarioServiceTest {
       .thenReturn(Optional.empty());
 
     Throwable exception = Assertions.catchThrowable(() ->
-      service.autenticar("email@email.com", "senha")
+      service.autenticar("email@email.com", "password")
     );
     Assertions
       .assertThat(exception)
       .isInstanceOf(ErroAutenticacao.class)
-      .hasMessage("Usuário não encontrado");
+      .hasMessage("User not found");
   }
 
   @Test
   public void incorrectPasswordError() {
-    String senha = "senha";
-    Usuario usuario = Usuario
+    String password = "password";
+    User user = User
       .builder()
       .email("email@email.com")
-      .senha(senha)
+      .password(password)
       .build();
     Mockito
       .when(repository.findByEmail(Mockito.anyString()))
-      .thenReturn(Optional.of(usuario));
+      .thenReturn(Optional.of(user));
 
     Throwable exception = Assertions.catchThrowable(() ->
       service.autenticar("email@email.com", "1223")
@@ -97,43 +90,41 @@ public class UsuarioServiceTest {
     Assertions
       .assertThat(exception)
       .isInstanceOf(ErroAutenticacao.class)
-      .hasMessage("Senha inválida");
+      .hasMessage("Incorrect Password");
   }
 
   @Test
   public void saveUser() {
     Mockito.doNothing().when(service).validarEmail(Mockito.anyString());
-    Usuario usuario = Usuario
+    User user = User
       .builder()
       .id(1l)
-      .nome("nome")
+      .name("name")
       .email("email@email.com")
-      .senha("senha")
+      .password("password")
       .build();
-    Mockito
-      .when(repository.save(Mockito.any(Usuario.class)))
-      .thenReturn(usuario);
+    Mockito.when(repository.save(Mockito.any(User.class))).thenReturn(user);
 
-    Usuario usuarioSalvo = service.salvarUsuario(new Usuario());
+    User usuarioSalvo = service.salvarUsuario(new User());
 
     Assertions.assertThat(usuarioSalvo).isNotNull();
     Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
-    Assertions.assertThat(usuarioSalvo.getNome()).isEqualTo("nome");
+    Assertions.assertThat(usuarioSalvo.getName()).isEqualTo("name");
     Assertions.assertThat(usuarioSalvo.getEmail()).isEqualTo("email@email.com");
-    Assertions.assertThat(usuarioSalvo.getSenha()).isEqualTo("senha");
+    Assertions.assertThat(usuarioSalvo.getPassword()).isEqualTo("password");
   }
 
   @Test(expected = RegraNegocioException.class)
   public void dontSaveUserWithAnAlreadyRegisteredEmail() {
     String email = "email@email.com";
-    Usuario usuario = Usuario.builder().email(email).build();
+    User user = User.builder().email(email).build();
     Mockito
       .doThrow(RegraNegocioException.class)
       .when(service)
       .validarEmail(email);
 
-    service.salvarUsuario(usuario);
+    service.salvarUsuario(user);
 
-    Mockito.verify(repository, Mockito.never()).save(usuario);
+    Mockito.verify(repository, Mockito.never()).save(user);
   }
 }

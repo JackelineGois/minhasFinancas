@@ -1,6 +1,6 @@
 package com.project.demo.model.enums;
 
-public enum StatusLancamento {
+public enum ReleaseStatus {
   PENDENTE,
   CANCELADO,
   EFETIVADO,

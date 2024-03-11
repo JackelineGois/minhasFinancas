@@ -7,9 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class UsuarioDTO {
+public class UserDTO {
 
   private String email;
-  private String nome;
-  private String senha;
+  private String name;
+  private String password;
 }

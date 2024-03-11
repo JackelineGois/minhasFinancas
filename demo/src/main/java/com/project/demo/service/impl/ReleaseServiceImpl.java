@@ -1,10 +1,10 @@
 package com.project.demo.service.impl;
 
-import com.project.demo.entities.Lancamento;
+import com.project.demo.entities.Releases;
 import com.project.demo.exceptions.RegraNegocioException;
-import com.project.demo.model.enums.StatusLancamento;
+import com.project.demo.model.enums.ReleaseStatus;
 import com.project.demo.model.repositories.LancamentoRepositories;
-import com.project.demo.service.Launch;
+import com.project.demo.service.ReleaseService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -15,25 +15,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class LaunchServiceImpl implements Launch {
+public class ReleaseServiceImpl implements ReleaseService {
 
   private LancamentoRepositories repository;
 
-  public LaunchServiceImpl(LancamentoRepositories repository) {
+  public ReleaseServiceImpl(LancamentoRepositories repository) {
     this.repository = repository;
   }
 
   @Override
   @Transactional
-  public Lancamento salvar(Lancamento launch) {
+  public Releases salvar(Releases launch) {
     validate(launch);
-    launch.setStatus(StatusLancamento.PENDENTE);
+    launch.setStatus(ReleaseStatus.PENDENTE);
     return repository.save(launch);
   }
 
   @Override
   @Transactional
-  public Lancamento update(Lancamento launch) {
+  public Releases update(Releases launch) {
     Objects.requireNonNull(launch.getId());
     validate(launch);
     return repository.save(launch);
@@ -41,14 +41,14 @@ public class LaunchServiceImpl implements Launch {
 
   @Override
   @Transactional
-  public void deletar(Lancamento launch) {
+  public void deletar(Releases launch) {
     Objects.requireNonNull(launch.getId());
     repository.delete(launch);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<Lancamento> buscar(Lancamento filterLaunch) {
+  public List<Releases> buscar(Releases filterLaunch) {
     Example example = Example.of(
       filterLaunch,
       ExampleMatcher
@@ -60,36 +60,41 @@ public class LaunchServiceImpl implements Launch {
   }
 
   @Override
-  public void statusUpdate(Lancamento launch, StatusLancamento status) {
+  public void statusUpdate(Releases launch, ReleaseStatus status) {
     launch.setStatus(status);
     update(launch);
   }
 
   @Override
-  public void validate(Lancamento launch) {
+  public void validate(Releases launch) {
     if (
-      launch.getDescricao() == null || launch.getDescricao().trim().equals("")
+      launch.getDescription() == null ||
+      launch.getDescription().trim().equals("")
     ) {
       throw new RegraNegocioException("Enter a valid Description");
     }
     if (
-      launch.getMes() == null || launch.getMes() < 1 || launch.getMes() > 12
+      launch.getMonth() == null ||
+      launch.getMonth() < 1 ||
+      launch.getMonth() > 12
     ) {
       throw new RegraNegocioException("Enter a valid Month");
     }
-    if (launch.getAno() == null || launch.getAno().toString().length() != 4) {
+    if (
+      launch.getYear() == null || launch.getMonth().toString().length() != 4
+    ) {
       throw new RegraNegocioException("Enter a valid Year");
     }
-    if (launch.getUsuario() == null || launch.getUsuario().getId() == null) {
+    if (launch.getUser() == null || launch.getUser().getId() == null) {
       throw new RegraNegocioException("Inform a User");
     }
     if (
-      launch.getValor() == null ||
-      launch.getValor().compareTo(BigDecimal.ZERO) < 1
+      launch.getValue() == null ||
+      launch.getValue().compareTo(BigDecimal.ZERO) < 1
     ) {
       throw new RegraNegocioException("Inform a valid value");
     }
-    if (launch.getTipo() == null) {
+    if (launch.getType() == null) {
       throw new RegraNegocioException("Inform a type of launch");
     }
   }

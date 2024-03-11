@@ -1,6 +1,6 @@
 package com.project.demo.model.enums;
 
-public enum TipoLancamento {
+public enum ReleaseType {
   RECEITA,
   DESPESA,
 }

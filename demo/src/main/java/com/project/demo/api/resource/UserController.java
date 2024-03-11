@@ -1,10 +1,10 @@
 package com.project.demo.api.resource;
 
-import com.project.demo.api.dto.UsuarioDTO;
-import com.project.demo.entities.Usuario;
+import com.project.demo.api.dto.UserDTO;
+import com.project.demo.entities.User;
 import com.project.demo.exceptions.ErroAutenticacao;
 import com.project.demo.exceptions.RegraNegocioException;
-import com.project.demo.service.UsuarioService;
+import com.project.demo.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/usuarios")
-public class UsuarioController {
+public class UserController {
 
-  private UsuarioService service;
+  private UserService service;
 
-  public UsuarioController(UsuarioService service) {
+  public UserController(UserService service) {
     this.service = service;
   }
 
   @PostMapping("/autenticar")
-  public ResponseEntity autenticar(@RequestBody UsuarioDTO dto) {
+  public ResponseEntity autenticar(@RequestBody UserDTO dto) {
     try {
-      Usuario usuarioAutenticado = service.autenticar(
+      User usuarioAutenticado = service.autenticar(
         dto.getEmail(),
-        dto.getSenha()
+        dto.getPassword()
       );
       return ResponseEntity.ok(usuarioAutenticado);
     } catch (ErroAutenticacao e) {
@@ -36,16 +36,16 @@ public class UsuarioController {
   }
 
   @PostMapping
-  public ResponseEntity save(@RequestBody UsuarioDTO dto) {
-    Usuario usuario = Usuario
+  public ResponseEntity save(@RequestBody UserDTO dto) {
+    User usuario = User
       .builder()
-      .nome(dto.getNome())
+      .name(dto.getName())
       .email(dto.getEmail())
-      .senha(dto.getSenha())
+      .password(dto.getPassword())
       .build();
 
     try {
-      Usuario usuarioSalvo = service.salvarUsuario(usuario);
+      User usuarioSalvo = service.salvarUsuario(usuario);
       return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
     } catch (RegraNegocioException e) {
       return ResponseEntity.badRequest().body(e.getMessage());

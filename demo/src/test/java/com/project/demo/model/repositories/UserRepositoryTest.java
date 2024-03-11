@@ -1,6 +1,6 @@
 package com.project.demo.model.repositories;
 
-import com.project.demo.entities.Usuario;
+import com.project.demo.entities.User;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @ActiveProfiles("test")
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = Replace.NONE)
-public class UsuarioRepositoryTest {
+public class UserRepositoryTest {
 
   @Autowired
   UsuarioRepositories repository;
@@ -27,7 +27,7 @@ public class UsuarioRepositoryTest {
 
   @Test
   public void CheckEmailExistence() {
-    Usuario usuario = createUser();
+    User usuario = createUser();
 
     entityManager.persist(usuario);
 
@@ -45,36 +45,36 @@ public class UsuarioRepositoryTest {
 
   @Test
   public void persistUserDatabase() {
-    Usuario usuario = createUser();
+    User usuario = createUser();
 
-    Usuario usuarioSalvo = repository.save(usuario);
+    User usuarioSalvo = repository.save(usuario);
 
     Assertions.assertThat(usuarioSalvo.getId()).isNotNull();
   }
 
   @Test
   public void persistUserEmailDatabase() {
-    Usuario user = createUser();
+    User user = createUser();
     entityManager.persist(user);
 
-    Optional<Usuario> result = repository.findByEmail("usuario@email.com");
+    Optional<User> result = repository.findByEmail("usuario@email.com");
 
     Assertions.assertThat(result.isPresent()).isTrue();
   }
 
   @Test
   public void returnEmptyUserByEmailWhenNotInDatabase() {
-    Optional<Usuario> result = repository.findByEmail("usuario@email.com");
+    Optional<User> result = repository.findByEmail("usuario@email.com");
 
     Assertions.assertThat(result.isPresent()).isFalse();
   }
 
-  public static Usuario createUser() {
-    return Usuario
+  public static User createUser() {
+    return User
       .builder()
-      .nome("usuario")
+      .name("usuario")
       .email("usuario@email.com")
-      .senha("jsds")
+      .password("jsds")
       .build();
   }
 }
