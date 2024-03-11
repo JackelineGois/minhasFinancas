@@ -44,9 +44,7 @@ public class UsuarioImpl implements UsuarioService {
   public void validarEmail(String email) {
     boolean exist = repository.existsByEmail(email);
     if (exist) {
-      throw new RegraNegocioException(
-        "Email já cadastrado, Por favor tente novamente"
-      );
+      throw new RegraNegocioException("Email already registered");
     }
   }
 }
