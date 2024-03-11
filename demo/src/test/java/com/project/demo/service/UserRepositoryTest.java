@@ -3,7 +3,7 @@ package com.project.demo.service;
 import com.project.demo.entities.User;
 import com.project.demo.exceptions.ErroAutenticacao;
 import com.project.demo.exceptions.RegraNegocioException;
-import com.project.demo.model.repositories.UsuarioRepositories;
+import com.project.demo.model.repositories.UserRepository;
 import com.project.demo.service.impl.UserServiceImpl;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
@@ -23,7 +23,7 @@ public class UserRepositoryTest {
   UserServiceImpl service;
 
   @MockBean
-  UsuarioRepositories repository;
+  UserRepository repository;
 
   @Test(expected = Test.None.class)
   public void ValidatedEmail() {

@@ -3,11 +3,12 @@ package com.project.demo.service.impl;
 import com.project.demo.entities.Releases;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.enums.ReleaseStatus;
-import com.project.demo.model.repositories.LancamentoRepositories;
+import com.project.demo.model.repositories.ReleaseRepository;
 import com.project.demo.service.ReleaseService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -17,40 +18,40 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReleaseServiceImpl implements ReleaseService {
 
-  private LancamentoRepositories repository;
+  private ReleaseRepository repository;
 
-  public ReleaseServiceImpl(LancamentoRepositories repository) {
+  public ReleaseServiceImpl(ReleaseRepository repository) {
     this.repository = repository;
   }
 
   @Override
   @Transactional
-  public Releases salvar(Releases launch) {
-    validate(launch);
-    launch.setStatus(ReleaseStatus.PENDENTE);
-    return repository.save(launch);
+  public Releases save(Releases releases) {
+    validate(releases);
+    releases.setStatus(ReleaseStatus.PENDENTE);
+    return repository.save(releases);
   }
 
   @Override
   @Transactional
-  public Releases update(Releases launch) {
-    Objects.requireNonNull(launch.getId());
-    validate(launch);
-    return repository.save(launch);
+  public Releases update(Releases releases) {
+    Objects.requireNonNull(releases.getId());
+    validate(releases);
+    return repository.save(releases);
   }
 
   @Override
   @Transactional
-  public void deletar(Releases launch) {
-    Objects.requireNonNull(launch.getId());
-    repository.delete(launch);
+  public void delete(Releases releases) {
+    Objects.requireNonNull(releases.getId());
+    repository.delete(releases);
   }
 
   @Override
   @Transactional(readOnly = true)
-  public List<Releases> buscar(Releases filterLaunch) {
+  public List<Releases> search(Releases filterReleases) {
     Example example = Example.of(
-      filterLaunch,
+      filterReleases,
       ExampleMatcher
         .matching()
         .withIgnoreCase()
@@ -60,9 +61,9 @@ public class ReleaseServiceImpl implements ReleaseService {
   }
 
   @Override
-  public void statusUpdate(Releases launch, ReleaseStatus status) {
-    launch.setStatus(status);
-    update(launch);
+  public void statusUpdate(Releases releases, ReleaseStatus status) {
+    releases.setStatus(status);
+    update(releases);
   }
 
   @Override
@@ -97,5 +98,10 @@ public class ReleaseServiceImpl implements ReleaseService {
     if (launch.getType() == null) {
       throw new RegraNegocioException("Inform a type of launch");
     }
+  }
+
+  @Override
+  public Optional<Releases> obtainByID(Long id) {
+    return repository.findById(id);
   }
 }

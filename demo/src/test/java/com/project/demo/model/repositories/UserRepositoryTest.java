@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class UserRepositoryTest {
 
   @Autowired
-  UsuarioRepositories repository;
+  UserRepository repository;
 
   @Autowired
   TestEntityManager entityManager;

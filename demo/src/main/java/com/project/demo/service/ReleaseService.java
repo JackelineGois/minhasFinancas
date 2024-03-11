@@ -3,12 +3,14 @@ package com.project.demo.service;
 import com.project.demo.entities.Releases;
 import com.project.demo.model.enums.ReleaseStatus;
 import java.util.List;
+import java.util.Optional;
 
 public interface ReleaseService {
-  Releases salvar(Releases launch);
-  Releases update(Releases launch);
-  void deletar(Releases launch);
-  List<Releases> buscar(Releases filterLaunch);
-  void statusUpdate(Releases launch, ReleaseStatus status);
-  void validate(Releases launch);
+  Releases save(Releases releases);
+  Releases update(Releases releases);
+  void delete(Releases releases);
+  List<Releases> search(Releases filterReleases);
+  void statusUpdate(Releases releases, ReleaseStatus status);
+  void validate(Releases releases);
+  Optional<Releases> obtainByID(Long id);
 }

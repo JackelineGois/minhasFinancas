@@ -3,7 +3,7 @@ package com.project.demo.service.impl;
 import com.project.demo.entities.User;
 import com.project.demo.exceptions.ErroAutenticacao;
 import com.project.demo.exceptions.RegraNegocioException;
-import com.project.demo.model.repositories.UsuarioRepositories;
+import com.project.demo.model.repositories.UserRepository;
 import com.project.demo.service.UserService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserServiceImpl implements UserService {
 
-  private UsuarioRepositories repository;
+  private UserRepository repository;
 
   @Autowired
-  public UserServiceImpl(UsuarioRepositories repository) {
+  public UserServiceImpl(UserRepository repository) {
     this.repository = repository;
   }
 
