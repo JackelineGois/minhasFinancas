@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class UserRepositoryTest {
+public class UserServiceTest {
 
   @SpyBean
   UserServiceImpl service;
