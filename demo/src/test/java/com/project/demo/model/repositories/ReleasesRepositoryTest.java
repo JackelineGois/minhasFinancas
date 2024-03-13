@@ -85,7 +85,7 @@ public class ReleasesRepositoryTest {
     assertThat(searchedReleases.isPresent()).isTrue();
   }
 
-  private Releases createReleases() {
+  public static Releases createReleases() {
     return Releases
       .builder()
       .month(1)
@@ -98,9 +98,9 @@ public class ReleasesRepositoryTest {
       .build();
   }
 
-  private Releases mustPersistReleases() {
+  public Releases mustPersistReleases() {
     Releases releases = createReleases();
-    entityManager.persist(releases);
+    releases = entityManager.persist(releases);
     return releases;
   }
 }
