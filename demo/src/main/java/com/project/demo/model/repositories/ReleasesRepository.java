@@ -2,6 +2,7 @@ package com.project.demo.model.repositories;
 
 import com.project.demo.entities.Releases;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ReleaseRepository
-  extends JpaRepository<Releases, Long> {}
+@Repository
+public interface ReleasesRepository extends JpaRepository<Releases, Long> {}

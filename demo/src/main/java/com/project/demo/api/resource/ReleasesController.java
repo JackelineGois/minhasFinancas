@@ -53,7 +53,7 @@ public class ReleasesController {
         try {
           Releases releases = convert(dto);
           releases.setId(entity.getId());
-          service.update(entity);
+          service.update(releases);
           return ResponseEntity.ok(releases);
         } catch (RegraNegocioException e) {
           return ResponseEntity.badRequest().body(e.getMessage());
@@ -88,7 +88,7 @@ public class ReleasesController {
     @RequestParam(value = "description", required = false) String description,
     @RequestParam(value = "month", required = false) Integer month,
     @RequestParam(value = "year", required = false) Integer year,
-    @RequestParam("user") Long idUser
+    @RequestParam(value = "user") Long idUser
   ) {
     Releases releasesFilter = new Releases();
 
@@ -97,7 +97,7 @@ public class ReleasesController {
     releasesFilter.setYear(year);
 
     Optional<User> user = userService.getById(idUser);
-    if (user.isPresent()) {
+    if (!user.isPresent()) {
       return ResponseEntity
         .badRequest()
         .body("It was not possible to carry out the query. User not found");
@@ -124,8 +124,14 @@ public class ReleasesController {
         new RegraNegocioException("User not found for the id provided")
       );
     releases.setUser(user);
-    releases.setType(ReleaseType.valueOf(dto.getType()));
-    releases.setStatus(ReleaseStatus.valueOf(dto.getStatus()));
+
+    if (dto.getType() != null) {
+      releases.setType(ReleaseType.valueOf(dto.getType()));
+    }
+    if (dto.getStatus() != null) {
+      releases.setStatus(ReleaseStatus.valueOf(dto.getStatus()));
+    }
+
     return releases;
   }
 }

@@ -33,7 +33,7 @@ public class UserController {
     }
   }
 
-  @PostMapping
+  @PostMapping("/save")
   public ResponseEntity save(@RequestBody UserDTO dto) {
     User usuario = User
       .builder()
@@ -43,8 +43,8 @@ public class UserController {
       .build();
 
     try {
-      User usuarioSalvo = service.salvarUsuario(usuario);
-      return new ResponseEntity(usuarioSalvo, HttpStatus.CREATED);
+      User userSalvo = service.saveUser(usuario);
+      return new ResponseEntity(userSalvo, HttpStatus.CREATED);
     } catch (RegraNegocioException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }

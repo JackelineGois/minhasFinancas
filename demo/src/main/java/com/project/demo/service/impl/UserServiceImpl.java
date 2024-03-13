@@ -21,13 +21,13 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User autenticar(String email, String senha) {
+  public User autenticar(String email, String password) {
     Optional<User> user = repository.findByEmail(email);
 
     if (!user.isPresent()) {
       throw new ErroAutenticacao("Usuário não encontrado");
     }
-    if (!user.get().getPassword().equals(senha)) {
+    if (!user.get().getPassword().equals(password)) {
       throw new ErroAutenticacao("Senha inválida");
     }
     return user.get();
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional
-  public User salvarUsuario(User usuario) {
+  public User saveUser(User usuario) {
     validarEmail(usuario.getEmail());
     return repository.save(usuario);
   }

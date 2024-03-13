@@ -3,12 +3,13 @@ package com.project.demo.service.impl;
 import com.project.demo.entities.Releases;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.enums.ReleaseStatus;
-import com.project.demo.model.repositories.ReleaseRepository;
+import com.project.demo.model.repositories.ReleasesRepository;
 import com.project.demo.service.ReleaseService;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
@@ -18,9 +19,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ReleaseServiceImpl implements ReleaseService {
 
-  private ReleaseRepository repository;
+  private ReleasesRepository repository;
 
-  public ReleaseServiceImpl(ReleaseRepository repository) {
+  @Autowired
+  public ReleaseServiceImpl(ReleasesRepository repository) {
     this.repository = repository;
   }
 
@@ -81,9 +83,7 @@ public class ReleaseServiceImpl implements ReleaseService {
     ) {
       throw new RegraNegocioException("Enter a valid Month");
     }
-    if (
-      launch.getYear() == null || launch.getMonth().toString().length() != 4
-    ) {
+    if (launch.getYear() == null || launch.getYear().toString().length() != 4) {
       throw new RegraNegocioException("Enter a valid Year");
     }
     if (launch.getUser() == null || launch.getUser().getId() == null) {

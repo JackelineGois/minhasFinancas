@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 @Entity
-@Table(name = "releases", schema = "finance")
+@Table(name = "releases", schema = "financas")
 @Data
 @Builder
 @NoArgsConstructor

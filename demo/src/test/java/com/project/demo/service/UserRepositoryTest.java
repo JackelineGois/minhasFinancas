@@ -105,7 +105,7 @@ public class UserRepositoryTest {
       .build();
     Mockito.when(repository.save(Mockito.any(User.class))).thenReturn(user);
 
-    User usuarioSalvo = service.salvarUsuario(new User());
+    User usuarioSalvo = service.saveUser(new User());
 
     Assertions.assertThat(usuarioSalvo).isNotNull();
     Assertions.assertThat(usuarioSalvo.getId()).isEqualTo(1l);
@@ -123,7 +123,7 @@ public class UserRepositoryTest {
       .when(service)
       .validarEmail(email);
 
-    service.salvarUsuario(user);
+    service.saveUser(user);
 
     Mockito.verify(repository, Mockito.never()).save(user);
   }
