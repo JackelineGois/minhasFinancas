@@ -1,6 +1,7 @@
 package com.project.demo.api.resource;
 
 import com.project.demo.api.dto.ReleasesDTO;
+import com.project.demo.api.dto.UpdateStatusDTO;
 import com.project.demo.entities.Releases;
 import com.project.demo.entities.User;
 import com.project.demo.exceptions.RegraNegocioException;
@@ -55,6 +56,38 @@ public class ReleasesController {
           releases.setId(entity.getId());
           service.update(releases);
           return ResponseEntity.ok(releases);
+        } catch (RegraNegocioException e) {
+          return ResponseEntity.badRequest().body(e.getMessage());
+        }
+      })
+      .orElseGet(() ->
+        new ResponseEntity(
+          "Releases not found in the database",
+          HttpStatus.BAD_REQUEST
+        )
+      );
+  }
+
+  @PutMapping("{id}/update-status")
+  public ResponseEntity updateStatus(
+    @PathVariable("id") Long id,
+    @RequestBody UpdateStatusDTO dto
+  ) {
+    return service
+      .obtainByID(id)
+      .map(entity -> {
+        ReleaseStatus statusSelected = ReleaseStatus.valueOf(dto.getStatus());
+        if (statusSelected == null) {
+          return ResponseEntity
+            .badRequest()
+            .body(
+              "It wasn't possible update the Releases Status, insert a valid Status"
+            );
+        }
+        try {
+          entity.setStatus(statusSelected);
+          service.update(entity);
+          return ResponseEntity.ok(entity);
         } catch (RegraNegocioException e) {
           return ResponseEntity.badRequest().body(e.getMessage());
         }

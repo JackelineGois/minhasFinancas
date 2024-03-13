@@ -3,6 +3,7 @@ package com.project.demo.service.impl;
 import com.project.demo.entities.Releases;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.enums.ReleaseStatus;
+import com.project.demo.model.enums.ReleaseType;
 import com.project.demo.model.repositories.ReleasesRepository;
 import com.project.demo.service.ReleaseService;
 import java.math.BigDecimal;
@@ -103,5 +104,27 @@ public class ReleaseServiceImpl implements ReleaseService {
   @Override
   public Optional<Releases> obtainByID(Long id) {
     return repository.findById(id);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public BigDecimal getBalanceByUser(Long id) {
+    BigDecimal receitas = repository.getBalanceByTypeOfReleasesAndUsers(
+      id,
+      ReleaseType.RECEITA
+    );
+
+    BigDecimal despesas = repository.getBalanceByTypeOfReleasesAndUsers(
+      id,
+      ReleaseType.DESPESA
+    );
+
+    if (receitas == null) {
+      receitas = BigDecimal.ZERO;
+    }
+    if (despesas == null) {
+      despesas = BigDecimal.ZERO;
+    }
+    return receitas.subtract(despesas);
   }
 }
