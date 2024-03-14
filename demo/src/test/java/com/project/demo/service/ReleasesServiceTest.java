@@ -1,13 +1,17 @@
 package com.project.demo.service;
 
 import com.project.demo.entities.Releases;
+import com.project.demo.entities.User;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.enums.ReleaseStatus;
+import com.project.demo.model.enums.ReleaseType;
 import com.project.demo.model.repositories.ReleasesRepository;
 import com.project.demo.model.repositories.ReleasesRepositoryTest;
 import com.project.demo.service.impl.ReleaseServiceImpl;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -123,5 +127,150 @@ public class ReleasesServiceTest {
     List<Releases> result = service.search(releases);
 
     Assertions.assertThat(result).isNotEmpty().hasSize(1).contains(releases);
+  }
+
+  @Test
+  public void mustUpdateAReleasesStatus() {
+    Releases releases = ReleasesRepositoryTest.createReleases();
+    releases.setId(1l);
+    releases.setStatus(ReleaseStatus.PENDENTE);
+
+    ReleaseStatus newStatus = ReleaseStatus.EFETIVADO;
+    Mockito.doReturn(releases).when(service).update(releases);
+
+    service.statusUpdate(releases, newStatus);
+
+    Assertions.assertThat(releases.getStatus()).isEqualTo(newStatus);
+    Mockito.verify(service).update(releases);
+  }
+
+  @Test
+  public void mustGetReleasesById() {
+    Long id = 1l;
+
+    Releases releases = ReleasesRepositoryTest.createReleases();
+    releases.setId(id);
+
+    Mockito.when(repository.findById(id)).thenReturn(Optional.of(releases));
+
+    Optional<Releases> result = service.obtainByID(id);
+
+    Assertions.assertThat(result.isPresent()).isTrue();
+  }
+
+  @Test
+  public void mustReturnEmptyWhenNotExistReleases() {
+    Long id = 1l;
+
+    Releases releases = ReleasesRepositoryTest.createReleases();
+
+    Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+
+    Optional<Releases> result = service.obtainByID(id);
+
+    Assertions.assertThat(result.isPresent()).isFalse();
+  }
+
+  @Test
+  public void mustThrowErrorToValidadeReleases() {
+    Releases releases = new Releases();
+
+    //Descriptions
+    Throwable erro = Assertions.catchThrowable(() -> service.validate(releases)
+    );
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Description");
+
+    releases.setDescription("");
+
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Description");
+
+    releases.setDescription("salario");
+
+    //
+
+    //Month
+    releases.setMonth(0);
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Month");
+
+    releases.setMonth(13);
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Month");
+
+    releases.setMonth(1);
+    //
+
+    //Year
+    releases.setYear(123);
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Year");
+
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Enter a valid Year");
+
+    releases.setYear(2019);
+    //
+
+    //User
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Inform a User");
+
+    releases.setUser(new User());
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Inform a User");
+    releases.getUser().setId(1l);
+    //
+
+    //Value
+
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Inform a valid value");
+
+    releases.setValue(BigDecimal.ZERO);
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Inform a valid value");
+    releases.setValue(BigDecimal.valueOf(1));
+
+    //
+
+    //Type
+    erro = Assertions.catchThrowable(() -> service.validate(releases));
+    Assertions
+      .assertThat(erro)
+      .isInstanceOf(RegraNegocioException.class)
+      .hasMessage("Inform a type of releases");
+
+    releases.setType(ReleaseType.DESPESA);
   }
 }

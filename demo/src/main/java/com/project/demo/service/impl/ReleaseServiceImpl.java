@@ -97,7 +97,7 @@ public class ReleaseServiceImpl implements ReleaseService {
       throw new RegraNegocioException("Inform a valid value");
     }
     if (launch.getType() == null) {
-      throw new RegraNegocioException("Inform a type of launch");
+      throw new RegraNegocioException("Inform a type of releases");
     }
   }
 
