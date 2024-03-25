@@ -90,7 +90,7 @@ public class UserServiceTest {
     Assertions
       .assertThat(exception)
       .isInstanceOf(ErroAutenticacao.class)
-      .hasMessage("Incorrect Password");
+      .hasMessage("Incorrect Password ");
   }
 
   @Test

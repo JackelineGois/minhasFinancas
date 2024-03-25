@@ -114,6 +114,7 @@ public class ReleasesServiceTest {
     Mockito.verify(repository, Mockito.never()).delete(releases);
   }
 
+  @SuppressWarnings("unchecked")
   @Test
   public void mustFilterReleases() {
     Releases releases = ReleasesRepositoryTest.createReleases();

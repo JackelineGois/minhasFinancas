@@ -33,18 +33,18 @@ public class ReleasesController {
   private final UserService userService;
 
   @PostMapping
-  public ResponseEntity save(@RequestBody ReleasesDTO dto) {
+  public ResponseEntity<?> save(@RequestBody ReleasesDTO dto) {
     try {
       Releases entity = convert(dto);
       entity = service.save(entity);
-      return new ResponseEntity(entity, HttpStatus.CREATED);
+      return new ResponseEntity<>(entity, HttpStatus.CREATED);
     } catch (RegraNegocioException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
   @PutMapping("{id}")
-  public ResponseEntity update(
+  public ResponseEntity<?> update(
     @PathVariable("id") Long id,
     @RequestBody ReleasesDTO dto
   ) {
@@ -61,7 +61,7 @@ public class ReleasesController {
         }
       })
       .orElseGet(() ->
-        new ResponseEntity(
+        new ResponseEntity<>(
           "Releases not found in the database",
           HttpStatus.BAD_REQUEST
         )
@@ -69,7 +69,7 @@ public class ReleasesController {
   }
 
   @PutMapping("{id}/update-status")
-  public ResponseEntity updateStatus(
+  public ResponseEntity<?> updateStatus(
     @PathVariable("id") Long id,
     @RequestBody UpdateStatusDTO dto
   ) {
@@ -93,7 +93,7 @@ public class ReleasesController {
         }
       })
       .orElseGet(() ->
-        new ResponseEntity(
+        new ResponseEntity<>(
           "Releases not found in the database",
           HttpStatus.BAD_REQUEST
         )
@@ -101,15 +101,15 @@ public class ReleasesController {
   }
 
   @DeleteMapping("{id}")
-  public ResponseEntity delete(@PathVariable("id") Long id) {
+  public ResponseEntity<?> delete(@PathVariable("id") Long id) {
     return service
       .obtainByID(id)
       .map(entity -> {
         service.delete(entity);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
       })
       .orElseGet(() ->
-        new ResponseEntity(
+        new ResponseEntity<>(
           "Releases not Found in the database",
           HttpStatus.BAD_REQUEST
         )
@@ -117,7 +117,7 @@ public class ReleasesController {
   }
 
   @GetMapping
-  public ResponseEntity search(
+  public ResponseEntity<?> search(
     @RequestParam(value = "description", required = false) String description,
     @RequestParam(value = "month", required = false) Integer month,
     @RequestParam(value = "year", required = false) Integer year,
@@ -140,6 +140,34 @@ public class ReleasesController {
 
     List<Releases> releases = service.search(releasesFilter);
     return ResponseEntity.ok(releases);
+  }
+
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @GetMapping("{id}")
+  public ResponseEntity<?> obtainReleases(@PathVariable("id") Long id) {
+    return service
+      .obtainByID(id)
+      .map(releases -> new ResponseEntity<>(convert(releases), HttpStatus.OK))
+      .orElseGet(() ->
+        new ResponseEntity(
+          "Releases not found in the database",
+          HttpStatus.NOT_FOUND
+        )
+      );
+  }
+
+  private ReleasesDTO convert(Releases releases) {
+    return ReleasesDTO
+      .builder()
+      .id(releases.getId())
+      .description(releases.getDescription())
+      .value(releases.getValue())
+      .month(releases.getMonth())
+      .year(releases.getYear())
+      .status(releases.getStatus().name())
+      .type(releases.getType().name())
+      .user(releases.getUser().getId())
+      .build();
   }
 
   private Releases convert(ReleasesDTO dto) {

@@ -1,6 +1,7 @@
 package com.project.demo.service;
 
 import com.project.demo.entities.User;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
@@ -11,4 +12,6 @@ public interface UserService {
   void validarEmail(String email);
 
   Optional<User> getById(Long id);
+
+  List<User> allUsers(User filterUser);
 }

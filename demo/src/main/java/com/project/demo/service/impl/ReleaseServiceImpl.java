@@ -50,9 +50,11 @@ public class ReleaseServiceImpl implements ReleaseService {
     repository.delete(releases);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   @Transactional(readOnly = true)
   public List<Releases> search(Releases filterReleases) {
+    @SuppressWarnings("rawtypes")
     Example example = Example.of(
       filterReleases,
       ExampleMatcher

@@ -5,6 +5,7 @@ import com.project.demo.exceptions.ErroAutenticacao;
 import com.project.demo.exceptions.RegraNegocioException;
 import com.project.demo.model.repositories.UserRepository;
 import com.project.demo.service.UserService;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,10 +26,10 @@ public class UserServiceImpl implements UserService {
     Optional<User> user = repository.findByEmail(email);
 
     if (!user.isPresent()) {
-      throw new ErroAutenticacao("Usuário não encontrado");
+      throw new ErroAutenticacao("User not found");
     }
     if (!user.get().getPassword().equals(password)) {
-      throw new ErroAutenticacao("Senha inválida");
+      throw new ErroAutenticacao("Incorrect Password ");
     }
     return user.get();
   }
@@ -51,5 +52,10 @@ public class UserServiceImpl implements UserService {
   @Override
   public Optional<User> getById(Long id) {
     return repository.findById(id);
+  }
+
+  @Override
+  public List<User> allUsers(User filterUser) {
+    return repository.findAll();
   }
 }
