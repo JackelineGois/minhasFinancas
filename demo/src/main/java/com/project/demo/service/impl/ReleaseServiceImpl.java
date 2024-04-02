@@ -111,14 +111,16 @@ public class ReleaseServiceImpl implements ReleaseService {
   @Override
   @Transactional(readOnly = true)
   public BigDecimal getBalanceByUser(Long id) {
-    BigDecimal receitas = repository.getBalanceByTypeOfReleasesAndUsers(
+    BigDecimal receitas = repository.getBalanceByTypeOfReleasesAndUsersAndStatus(
       id,
-      ReleaseType.RECEITA
+      ReleaseType.RECEITA,
+      ReleaseStatus.EFETIVADO
     );
 
-    BigDecimal despesas = repository.getBalanceByTypeOfReleasesAndUsers(
+    BigDecimal despesas = repository.getBalanceByTypeOfReleasesAndUsersAndStatus(
       id,
-      ReleaseType.DESPESA
+      ReleaseType.DESPESA,
+      ReleaseStatus.EFETIVADO
     );
 
     if (receitas == null) {
